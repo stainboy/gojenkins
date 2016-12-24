@@ -1,32 +1,18 @@
 # Jenkins API Client for Go
 
+Forked from https://github.com/bndr/gojenkins
+
 [![GoDoc](https://godoc.org/github.com/bndr/gojenkins?status.svg)](https://godoc.org/github.com/bndr/gojenkins)
-[![Go Report Cart](https://goreportcard.com/badge/github.com/bndr/gojenkins)](https://goreportcard.com/report/github.com/bndr/gojenkins)
-[![Build Status](https://travis-ci.org/bndr/gojenkins.svg?branch=master)](https://travis-ci.org/bndr/gojenkins)
-
-## About
-
-Jenkins is the most popular Open Source Continuous Integration system. This Library will help you interact with Jenkins in a more developer-friendly way.
-
-These are some of the features that are currently implemented:
-
-* Get information on test-results of completed/failed build
-* Ability to query Nodes, and manipulate them. Start, Stop, set Offline.
-* Ability to query Jobs, and manipulate them.
-* Get Plugins, Builds, Artifacts, Fingerprints
-* Validate Fingerprints of Artifacts
-* Get Current Queue, Cancel Tasks
-* etc. For all methods go to GoDoc Reference.
 
 ## Installation
 
-    go get github.com/bndr/gojenkins
+    go get github.com/stainboy/gojenkins
 
 ## Usage
 
 ```go
 
-import "github.com/bndr/gojenkins"
+import "github.com/stainboy/gojenkins"
 
 jenkins, err := gojenkins.CreateJenkins("http://localhost:8080/", "admin", "admin").Init()
 
@@ -34,45 +20,17 @@ if err != nil {
   panic("Something Went Wrong")
 }
 
-build, err := jenkins.GetJob("job_name")
+job, err := jenkins.GetJob("sip")
 if err != nil {
   panic("Job Does Not Exist")
 }
 
-lastSuccessBuild := build.GetLastSuccessfulBuild()
+lastSuccessBuild := job.GetLastSuccessfulBuild()
 if err != nil {
   panic("Last SuccessBuild does not exist")
 }
 
 duration := lastSuccessBuild.GetDuration()
-
-job, err := jenkins.GetJob("jobname")
-
-if err != nil {
-  panic("Job does not exist")
-}
-
-job.Rename("SomeotherJobName")
-
-configString := `<?xml version='1.0' encoding='UTF-8'?>
-<project>
-  <actions/>
-  <description></description>
-  <keepDependencies>false</keepDependencies>
-  <properties/>
-  <scm class="hudson.scm.NullSCM"/>
-  <canRoam>true</canRoam>
-  <disabled>false</disabled>
-  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
-  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
-  <triggers class="vector"/>
-  <concurrentBuild>false</concurrentBuild>
-  <builders/>
-  <publishers/>
-  <buildWrappers/>
-</project>`
-
-j.CreateJob(configString, "someNewJobsName")
 
 
 ```

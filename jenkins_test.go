@@ -14,7 +14,7 @@ var (
 )
 
 func TestInit(t *testing.T) {
-	jenkins = CreateJenkins("http://localhost:8080", "admin", "admin")
+	jenkins = CreateJenkins("http://localhost:8888")
 	_, err := jenkins.Init()
 	assert.Nil(t, err, "Jenkins Initialization should not fail")
 }
@@ -122,12 +122,25 @@ func TestBuildMethods(t *testing.T) {
 }
 
 func TestGetSingleJob(t *testing.T) {
-	job, _ := jenkins.GetJob("Job1_test")
-	isRunning, _ := job.IsRunning()
-	config, err := job.GetConfig()
-	assert.Nil(t, err)
-	assert.Equal(t, false, isRunning)
-	assert.Contains(t, config, "<project>")
+	TestInit(t)
+
+	job, _ := jenkins.GetJob("sip")
+	// isRunning, _ := job.IsRunning()
+	// config, err := job.GetConfig()
+	// assert.Nil(t, err)
+	// assert.Equal(t, false, isRunning)
+	// assert.Contains(t, config, "<project>")
+
+	build, _ := job.GetLastBuild()
+	t.Logf("job name: %s, type: %s", job.GetName(), build.GetType())
+	t.Logf("last build is running: %v, is pipeline: %v, id=%d", build.IsRunning(), build.IsPipeline(), build.GetBuildNumber())
+
+	// params := build.GetParameters()
+	// t.Log(params)
+
+	pp, _ := build.GetPipeline()
+	t.Log(pp.raw)
+	//t.Logf("pipeline id: %d, name: %s, status: %s", pp.raw.ID, pp.raw.Name, pp.raw.Status)
 }
 
 func TestEnableDisableJob(t *testing.T) {

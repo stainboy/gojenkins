@@ -31,7 +31,7 @@ type Build struct {
 	Depth   int
 }
 
-type parameter struct {
+type Parameter struct {
 	Name  string
 	Value string
 }
@@ -59,7 +59,7 @@ type culprit struct {
 }
 
 type generalObj struct {
-	Parameters              []parameter              `json:"parameters"`
+	Parameters              []Parameter              `json:"parameters"`
 	Causes                  []map[string]interface{} `json:"causes"`
 	BuildsByBranchName      map[string]builds        `json:"buildsByBranchName"`
 	LastBuiltRevision       buildRevision            `json:"lastBuiltRevision"`
@@ -103,6 +103,7 @@ type testResult struct {
 }
 
 type buildResponse struct {
+	Type      string `json:"_class"`
 	Actions   []generalObj
 	Artifacts []struct {
 		DisplayPath  string `json:"displayPath"`
@@ -224,7 +225,7 @@ func (b *Build) GetCauses() ([]map[string]interface{}, error) {
 	return nil, errors.New("No Causes")
 }
 
-func (b *Build) GetParameters() []parameter {
+func (b *Build) GetParameters() []Parameter {
 	for _, a := range b.Raw.Actions {
 		if a.Parameters != nil {
 			return a.Parameters
@@ -422,6 +423,26 @@ func (b *Build) IsRunning() bool {
 		return false
 	}
 	return b.Raw.Building
+}
+
+func (b *Build) GetType() string {
+	return b.Raw.Type
+}
+
+func (b *Build) GetPipeline() (*Pipeline, error) {
+	pipeline := Pipeline{jenkins: b.Jenkins, job: b.Job, build: b}
+	status, err := pipeline.Poll()
+	if err != nil {
+		return nil, err
+	}
+	if status == 200 {
+		return &pipeline, nil
+	}
+	return nil, errors.New(strconv.Itoa(status))
+}
+
+func (b *Build) IsPipeline() bool {
+	return b.Raw.Type == "org.jenkinsci.plugins.workflow.job.WorkflowRun"
 }
 
 func (b *Build) SetDescription(description string) error {
