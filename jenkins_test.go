@@ -140,7 +140,7 @@ func TestGetSingleJob(t *testing.T) {
 
 	pp, _ := build.GetPipeline()
 	t.Log(pp.raw)
-	//t.Logf("pipeline id: %d, name: %s, status: %s", pp.raw.ID, pp.raw.Name, pp.raw.Status)
+	t.Logf("pipeline id: %d, name: %s, start: %v, duration: %v", pp.raw.ID, pp.raw.Name, pp.GetStartTime(), pp.GetDuration())
 }
 
 func TestEnableDisableJob(t *testing.T) {

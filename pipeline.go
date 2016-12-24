@@ -3,6 +3,7 @@ package gojenkins
 import (
 	"errors"
 	"fmt"
+	"time"
 )
 
 type Pipeline struct {
@@ -51,4 +52,16 @@ func (p *Pipeline) GetRaw() (*PipelineBody, error) {
 		return nil, errors.New("Pipeline body is nil")
 	}
 	return p.raw, nil
+}
+
+func (p *Pipeline) GetStartTime() time.Time {
+	return time.Unix(0, p.raw.StartTimeMillis*int64(time.Millisecond))
+}
+
+func (p *Pipeline) GetEndTime() time.Time {
+	return time.Unix(0, p.raw.EndTimeMillis*int64(time.Millisecond))
+}
+
+func (p *Pipeline) GetDuration() time.Duration {
+	return time.Duration(p.raw.DurationMillis)
 }
