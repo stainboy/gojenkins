@@ -213,10 +213,6 @@ func (b *Build) GetConsoleOutput() string {
 }
 
 func (b *Build) GetCauses() ([]map[string]interface{}, error) {
-	_, err := b.Poll()
-	if err != nil {
-		return nil, err
-	}
 	for _, a := range b.Raw.Actions {
 		if a.Causes != nil {
 			return a.Causes, nil

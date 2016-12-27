@@ -63,5 +63,5 @@ func (p *Pipeline) GetEndTime() time.Time {
 }
 
 func (p *Pipeline) GetDuration() time.Duration {
-	return time.Duration(p.raw.DurationMillis)
+	return time.Duration(p.raw.DurationMillis * int64(time.Millisecond))
 }
