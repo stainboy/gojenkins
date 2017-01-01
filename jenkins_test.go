@@ -14,7 +14,7 @@ var (
 )
 
 func TestInit(t *testing.T) {
-	jenkins = CreateJenkins("http://localhost:8888")
+	jenkins = CreateJenkins("http://localhost:8080")
 	_, err := jenkins.Init()
 	assert.Nil(t, err, "Jenkins Initialization should not fail")
 }
@@ -124,21 +124,29 @@ func TestBuildMethods(t *testing.T) {
 func TestGetSingleJob(t *testing.T) {
 	TestInit(t)
 
-	job, _ := jenkins.GetJob("sip")
+	build, err := jenkins.GetBuild("deploy-migration", 28)
+	assert.Nil(t, err, "Failed to get build")
+
+	t.Logf("build -> %d", build.GetDetails().Number)
+
+	assert.True(t, build.IsPipeline(), "Build is not type of pipeline")
+
 	// isRunning, _ := job.IsRunning()
 	// config, err := job.GetConfig()
 	// assert.Nil(t, err)
 	// assert.Equal(t, false, isRunning)
 	// assert.Contains(t, config, "<project>")
 
-	build, _ := job.GetLastBuild()
-	t.Logf("job name: %s, type: %s", job.GetName(), build.GetType())
-	t.Logf("last build is running: %v, is pipeline: %v, id=%d", build.IsRunning(), build.IsPipeline(), build.GetBuildNumber())
+	// build, _ := job.GetLastBuild()
+	// t.Logf("job name: %s, type: %s", job.GetName(), build.GetType())
+	// t.Logf("last build is running: %v, is pipeline: %v, id=%d", build.IsRunning(), build.IsPipeline(), build.GetBuildNumber())
 
 	// params := build.GetParameters()
 	// t.Log(params)
 
-	pp, _ := build.GetPipeline()
+	pp, err := build.GetPipeline()
+	assert.Nil(t, err)
+
 	t.Log(pp.raw)
 	t.Logf("pipeline id: %d, name: %s, start: %v, duration: %v", pp.raw.ID, pp.raw.Name, pp.GetStartTime(), pp.GetDuration())
 }

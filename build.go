@@ -158,7 +158,7 @@ type buildResponse struct {
 }
 
 // Builds
-func (b *Build) Info() *buildResponse {
+func (b *Build) GetDetails() *buildResponse {
 	return b.Raw
 }
 

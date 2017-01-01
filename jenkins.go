@@ -292,14 +292,8 @@ func (j *Jenkins) GetBuild(jobName string, number int64) (*Build, error) {
 
 func (j *Jenkins) GetJob(id string) (*Job, error) {
 	job := Job{Jenkins: j, Raw: new(jobResponse), Base: "/job/" + id}
-	status, err := job.Poll()
-	if err != nil {
-		return nil, err
-	}
-	if status == 200 {
-		return &job, nil
-	}
-	return nil, errors.New(strconv.Itoa(status))
+	job.Raw.Name = id
+	return &job, nil
 }
 
 func (j *Jenkins) GetAllNodes() ([]*Node, error) {

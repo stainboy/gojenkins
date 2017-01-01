@@ -14,7 +14,7 @@ type Pipeline struct {
 }
 
 type PipelineBody struct {
-	ID                  int64  `json:"id"`
+	ID                  string `json:"id"`
 	Name                string `json:"name"`
 	Status              string `json:"status"`
 	StartTimeMillis     int64  `json:"startTimeMillis"`
@@ -23,7 +23,7 @@ type PipelineBody struct {
 	QueueDurationMillis int64  `json:"queueDurationMillis"`
 	PauseDurationMillis int64  `json:"pauseDurationMillis"`
 	Stages              []struct {
-		ID                  int64  `json:"id"`
+		ID                  string `json:"id"`
 		Name                string `json:"name"`
 		ExecNode            string `json:"execNode"`
 		Status              string `json:"status"`
@@ -47,7 +47,7 @@ func (p *Pipeline) Poll() (int, error) {
 	return response.StatusCode, nil
 }
 
-func (p *Pipeline) GetRaw() (*PipelineBody, error) {
+func (p *Pipeline) GetDetails() (*PipelineBody, error) {
 	if p.raw == nil {
 		return nil, errors.New("Pipeline body is nil")
 	}
