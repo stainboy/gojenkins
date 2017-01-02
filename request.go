@@ -270,6 +270,10 @@ func (r *Requester) ReadRawResponse(response *http.Response, responseStruct inte
 func (r *Requester) ReadJSONResponse(response *http.Response, responseStruct interface{}) (*http.Response, error) {
 	defer response.Body.Close()
 
+	// raw, _ := ioutil.ReadAll(response.Body)
+	// log.Printf("body -> %s", raw)
+
+	// err := json.Unmarshal(raw, responseStruct)
 	err := json.NewDecoder(response.Body).Decode(responseStruct)
 	return response, err
 }

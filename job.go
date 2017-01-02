@@ -44,7 +44,7 @@ type job struct {
 type parameterDefinition struct {
 	DefaultParameterValue struct {
 		Name  string `json:"name"`
-		Value bool   `json:"value"`
+		Value string `json:"value"`
 	} `json:"defaultParameterValue"`
 	Description string `json:"description"`
 	Name        string `json:"name"`

@@ -52,13 +52,14 @@ var (
 // HTTP Client is set here, Connection to jenkins is tested here.
 func (j *Jenkins) Init() (*Jenkins, error) {
 	j.initLoggers()
-	// Skip SSL Verification?
-	tr := &http.Transport{
-		TLSClientConfig: &tls.Config{InsecureSkipVerify: !j.Requester.SslVerify},
-	}
 
 	if j.Requester.Client == nil {
 		cookies, _ := cookiejar.New(nil)
+
+		// Skip SSL Verification?
+		tr := &http.Transport{
+			TLSClientConfig: &tls.Config{InsecureSkipVerify: !j.Requester.SslVerify},
+		}
 
 		if os.Getenv("HTTP_PROXY") != "" {
 			proxyUrl, _ := url.Parse(os.Getenv("HTTP_PROXY"))
@@ -77,15 +78,10 @@ func (j *Jenkins) Init() (*Jenkins, error) {
 
 	// Check Connection
 	j.Raw = new(executorResponse)
-	rsp, err := j.Requester.GetJSON("/", j.Raw, nil)
 
+	_, err := j.Info()
 	if err != nil {
 		return nil, err
-	}
-
-	j.Version = rsp.Header.Get("X-Jenkins")
-	if j.Raw == nil {
-		return nil, errors.New("Connection Failed, Please verify that the host and credentials are correct.")
 	}
 
 	return j, nil
@@ -107,7 +103,7 @@ func (j *Jenkins) initLoggers() {
 
 // Get Basic Information About Jenkins
 func (j *Jenkins) Info() (*executorResponse, error) {
-	_, err := j.Requester.Get("/", j.Raw, nil)
+	_, err := j.Requester.GetJSON("/", j.Raw, nil)
 
 	if err != nil {
 		return nil, err

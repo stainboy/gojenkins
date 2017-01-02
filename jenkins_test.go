@@ -17,6 +17,9 @@ func TestInit(t *testing.T) {
 	jenkins = CreateJenkins("http://localhost:8080")
 	_, err := jenkins.Init()
 	assert.Nil(t, err, "Jenkins Initialization should not fail")
+
+	_, err = jenkins.Info()
+	assert.Nil(t, err, "Ping Jenkins fail")
 }
 
 func TestCreateJobs(t *testing.T) {
@@ -124,7 +127,7 @@ func TestBuildMethods(t *testing.T) {
 func TestGetSingleJob(t *testing.T) {
 	TestInit(t)
 
-	build, err := jenkins.GetBuild("deploy-migration", 28)
+	build, err := jenkins.GetBuild("deploy-migration", 27)
 	assert.Nil(t, err, "Failed to get build")
 
 	t.Logf("build -> %d", build.GetDetails().Number)
